@@ -145,5 +145,3 @@ int main() {
 
     return 0;
 }
-  //  g++ main.cpp GraphColoring.cpp Vertex.cpp -o main -std=c++17 -Wall 
-  //  g++ main.cpp Graph.cpp -o main -std=c++17 -Wall -Wextra
