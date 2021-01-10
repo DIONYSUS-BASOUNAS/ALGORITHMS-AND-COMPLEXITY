@@ -8,6 +8,31 @@
 
 using namespace std;
 
+void selectAlgorithm(Graph* g) {
+    cout << "1) First Fit" << endl;
+    cout << "2) DSatur" << endl;
+    cout << "3) RLF" << endl;
+    cout << "4) Backtracking DSatur" << endl;
+    int option;
+    cin >> option;
+    
+    switch (option)
+    {
+    case 1:
+        g -> greedyColoring();
+        break;
+    
+    case 2:
+        g -> DSatur();
+        break;
+
+    default:
+        exit(-1);
+        break;
+    }
+
+}
+
 void readData(string fn, int exams) {
     vector<set<int>> examStudents(exams+1);
     Graph* graph = new Graph(exams,fn);
@@ -40,14 +65,16 @@ cout<< endl;
     }
     cout <<endl;
     graph ->initaiLizedAdj_Martix(examStudents);
+    graph -> conflictDensity();
     graph -> stats();
     graph -> degMean();
     graph -> coefVar();
     cout <<graph->toString()<<endl;
-    graph -> greedyColoring();
+    selectAlgorithm(graph);
+
     delete graph;
 }
-void selectMenuOption(int option) {
+void selectFile() {
     //Problems
     string datasets[14] = {
         "../datasets/car-f-92.stu", //0
@@ -65,15 +92,32 @@ void selectMenuOption(int option) {
         "../datasets/yor-f-83.stu", //12
         "../datasets/toy-e-s6.stu", //13 no toronto data, created for tests
     };
-    int exams[14]={5433, 682, 190, 81, 461, 381, 2419, 486, 139, 261, 622, 184, 181, 5};
+    int exams[14] = {543, 682, 190, 81, 461, 381, 2419, 486, 139, 261, 622, 184, 181, 5};
+    
+    int option;
+
+    for (int i = 0; i < 14; i++) 
+        cout << i + 1  << ") " << datasets[i].substr(12, 8) << endl;  
+
+    cin >> option;
+    option--;
+
+    if (option < 0 || option > 13)
+        exit(-1);
+    readData(datasets[option], exams[option]);    
+}
+
+void selectMenuOption(int option) {
+    
     Graph g;
-    switch (option)
-    {
+
+    switch (option) {
     case 1:
         g.printStatisticArray();
         break;
+
     case 2:
-        readData(datasets[13], exams[13]);
+        selectFile();
         break;
 
     default:
@@ -101,4 +145,5 @@ int main() {
 
     return 0;
 }
-    
+  //  g++ main.cpp GraphColoring.cpp Vertex.cpp -o main -std=c++17 -Wall 
+  //  g++ main.cpp Graph.cpp -o main -std=c++17 -Wall -Wextra

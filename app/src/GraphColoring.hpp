@@ -1,6 +1,8 @@
 #ifndef GRAPHCOLORING_HPP
 #define GRAPHCOLORING_HPP
 
+#include <climits>
+#include <list>
 #include <set>
 #include <iostream>
 #include <vector>
@@ -10,7 +12,7 @@
 class Graph {
     private:
     int exams;
-    int* adj_Matrix;
+    std::list<Vertex>* adj_Matrix;
     double confDen;
     int min,med,max;
     double mean;
@@ -32,22 +34,28 @@ class Graph {
             "Name: ute-s-92 |V|: 184 Conflict Density: 0.084475 Min: 2 Med: 13 Max: 58 Mean: 15.543478 CV(%): 69.135061%",
     };
 std :: vector<Vertex> vertices;
+std::set<int, std::greater<int>> colors;
 public:
 Graph();
 Graph (int exams,std::string problemName);
 ~Graph();
 void initaiLizedAdj_Martix(std::vector<std::set<int>> examStudents);
-void addEdge(int i , int j, int c);
+void addEdge(int i , int j);
 int commonElements (std::set<int> v1,std::set<int>v2);
 void conflictDensity();
 void stats();
 void degMean();
 void coefVar();
 void greedyColoring();
-void sortByDegree();
+void DSatur();
+void sortVerticesByDegree(std::vector<Vertex> &v);
+int maximumVertexDegree();
+bool graphIsColored();
+bool checkNeighborColor(int color, int source);
 void printStatisticArray();
+int getDegree(int vertex);
 int getVertices();
-int* getAdj_Matrix();
+std::list<Vertex>* getadj_Matrix(); 
 std::string toString();
 };
 #endif

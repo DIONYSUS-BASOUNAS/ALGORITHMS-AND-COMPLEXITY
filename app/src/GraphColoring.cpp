@@ -4,6 +4,8 @@ Graph::Graph(int exams, std::string problemName)
 {
     this->exams = exams;
     this->problemName = problemName;
+    adj_Matrix = new std::list<Vertex>[exams];
+    colors.insert(1);
 }
 Graph::~Graph()
 {
@@ -14,23 +16,30 @@ void Graph::initaiLizedAdj_Martix(std::vector<std::set<int>> examStudents)
     std::cout << "Adjacency Matrix" << std::endl;
     for (int i = 0; i < exams; i++)
     {
+        std::cout << i+1<<":";
         for (int j = 0; j < exams; j++)
         {
             if (i == j)
             {
-                addEdge(i, j, 0);
+               
                 continue;
             }
             int c = commonElements(examStudents[i + 1], examStudents[j + 1]);
-            if (c > 0)
-                std::cout << i + 1 << "" << j + 1 << "" << c << std::endl;
-            addEdge(i, j, c);
+            if (c > 0){
+            if(j>i)
+                addEdge(i, j);
+            std:: cout << j +1 <<"";
         }
     }
+     std::cout << std::endl;
+    }
 }
-void Graph::addEdge(int i, int j, int c)
+void Graph::addEdge(int i, int j)
 {
-    adj_Matrix[i * exams + j] = c;
+    Vertex v1(j);
+    adj_Matrix[i].push_back(v1);
+    Vertex v2(i);
+    adj_Matrix[j].push_back(v2);
 }
 int Graph::commonElements(std::set<int> s1, std::set<int> s2)
 {
@@ -51,46 +60,34 @@ int Graph::commonElements(std::set<int> s1, std::set<int> s2)
 
 void Graph::conflictDensity()
 {
-    int c = 0;
-    for (int i = 0; i < exams; i++)
-    {
-        for (int j = 0; j < exams; j++)
-        {
-            if (adj_Matrix[i * exams + j] > 0)
-            {
-                c++;
-            }
+     int c = 0;
+    for (int i = 0; i < exams; i++) {
+        for (auto j = adj_Matrix[i].begin(); j != adj_Matrix[i].end(); ++j) {
+            c++;
         }
     }
-    this->confDen = double(c) / double(exams * exams);
+    this -> confDen = double(c) / double(exams * exams);
 }
 void Graph::stats()
 {
-    int c;
     this->max = 0;
     this->min = (2 ^ 31) - 1;
     for (int i = 0; i < exams; i++)
     {
-        c = 0;
-        for (int j = 0; j < exams; j++)
-        {
-            if (adj_Matrix[i * exams + j] > 0)
-            {
-                c++;
-            }
-        }
+        int degree = adj_Matrix[i].size();
+        Vertex v(i, degree);
+        this -> vertices.push_back(v);
 
-        Vertex v(i, c);
-        this->vertices.push_back(v);
+        this -> sequenceDegree.push_back(degree);
+           if(degree > max)
+           this -> max = degree;
+           if(degree < min)
+           this -> min = degree;
+        
 
-        this->sequenceDegree.push_back(c);
-        if (c > max)
-            this->max = c;
-
-        if (c < min)
-            this->min = c;
+       
     }
-     sort(sequenceDegree.begin(), sequenceDegree.end());
+    std::sort(sequenceDegree.begin(), sequenceDegree.end());
     int indexMed;
     if (sequenceDegree.size() % 2 == 0) {
         indexMed = sequenceDegree.size() / 2;
@@ -121,10 +118,8 @@ void Graph::coefVar(){
 }
 void Graph::greedyColoring()
 {
-    sortByDegree();
+   sortVerticesByDegree(vertices);
     int colorOfVertex[exams];
-
-    colorOfVertex[vertices[0].getVertex()] = 0;
 
     for (int u = 1; u < exams; u++)
         colorOfVertex[vertices[u].getVertex()] = -1; 
@@ -133,17 +128,15 @@ void Graph::greedyColoring()
     for (int cr = 0; cr < exams; cr++)
         availableColors[cr] = true;
 
+    colorOfVertex[vertices[0].getVertex()] = 0;
     // Assign colors to remaining V-1 vertices
     for (int u = 1; u < exams; u++)
     {
         // Process all adjacent vertices and flag their colors
         // as unavailable
-        for (int i = 0; i < exams; i++) {
-            if (adj_Matrix[vertices[u].getVertex() * exams + i] <= 0)
-                continue;
-
-            if (colorOfVertex[i] != -1)
-                availableColors[colorOfVertex[i]] = false;
+        for (auto i = adj_Matrix[vertices[u].getVertex()].begin(); i != adj_Matrix[vertices[u].getVertex()].end(); ++i) {
+            if (colorOfVertex[i->getVertex()] != -1)
+                availableColors[colorOfVertex[i->getVertex()]] = false;
         }
 
         // Find the first available color
@@ -156,9 +149,6 @@ void Graph::greedyColoring()
 
         // Reset the values back to true for the next iteration
         for (int i = 0; i < exams; i++) {
-            if (adj_Matrix[vertices[u].getVertex() * exams + i] <= 0)
-                continue;
-
             if (colorOfVertex[i] != -1)
                 availableColors[colorOfVertex[i]] = true;
         }
@@ -169,16 +159,108 @@ void Graph::greedyColoring()
         std::cout << "Vertex " << u << " --->  Color "
              << colorOfVertex[u] << std::endl;
 }
-void Graph::sortByDegree(){
-    std::sort(vertices.rbegin(),vertices.rend());
+void Graph::DSatur() {
+
+    int colorOfVertex[exams];
+
+    int mvd = maximumVertexDegree();
+
+    for (int v = 0; v < exams; v++) 
+        colorOfVertex[v] = -1;
+
+    colorOfVertex[mvd] = *colors.end();
+    vertices[mvd].setSatur(-1);
+    vertices[mvd].setVertexColored(true);
+
+    for (auto it = adj_Matrix[mvd].begin(); it != adj_Matrix[mvd].end(); ++it) {
+        if (!(vertices[it->getVertex()].checkNeighborColor(colorOfVertex[it->getVertex()], mvd, adj_Matrix[it->getVertex()], colorOfVertex, vertices)))
+           vertices[it->getVertex()].raiseSatur();
+
+    }
+
+    while (!graphIsColored()) {
+        int maxSaturDegree = 0;
+        for (auto it = vertices.begin(); it != vertices.end(); ++it)
+            if ((it->getSatur() > maxSaturDegree) && !(it->isVertexColored()))
+                maxSaturDegree = it->getSatur();
+
+        int maxSaturVertex;
+        int degree = 0;
+        for (auto it : vertices) {
+            if ((it.getSatur() == maxSaturDegree) && !(it.isVertexColored())) {
+                if (it.getDegree() > degree) {
+                    degree = it.getDegree();
+                    maxSaturVertex = it.getVertex();
+                }
+            }
+        }
+
+        //color vertex
+        std::set< int, std::greater<int> > aux;
+        std::set< int, std::greater<int> > diff;
+        for (auto it = adj_Matrix[maxSaturVertex].begin(); it != adj_Matrix[maxSaturVertex].end(); ++it)
+            if (vertices[it->getVertex()].isVertexColored())
+                aux.insert(colorOfVertex[it->getVertex()]);
+
+        std::set_difference(
+            colors.begin(), colors.end(),
+            aux.begin(), aux.end(),
+            std::inserter(diff, diff.end())
+        );
+
+        if (diff.size() > 0) {
+            colorOfVertex[maxSaturVertex] = *diff.end();
+        } else {
+            int newColor = *colors.end() + 1;
+            colors.insert(newColor);
+            colorOfVertex[maxSaturVertex] = *colors.end();
+        }
+
+        vertices[maxSaturVertex].setVertexColored(true);
+
+        //update Neighbors
+        for (auto it = adj_Matrix[maxSaturVertex].begin(); it != adj_Matrix[maxSaturVertex].end(); ++it)
+            if (!(vertices[it->getVertex()].checkNeighborColor(colorOfVertex[maxSaturVertex], maxSaturVertex, adj_Matrix[it->getVertex()], colorOfVertex, vertices)))
+                vertices[it->getVertex()].raiseSatur();
+    }
+
+    //print colored graph
+    for (int u = 0; u < exams; u++)
+        std::cout << "Vertex " << u << " --->  Color "
+             << colorOfVertex[u] - 1 << std::endl;
+}
+void Graph::sortVerticesByDegree(std::vector<Vertex> &v) {
+    std::sort(v.rbegin(), v.rend());
+}
+int Graph::maximumVertexDegree() {
+    int max = getDegree(0);
+    int vertex = 0;
+  
+    for (int i = 1; i <exams; i++) {
+        if (getDegree(i) > max) {
+            max = getDegree(i);
+            vertex = i;
+        }
+    }
+    return vertex;
+}
+bool Graph::graphIsColored() {
+    for (auto it : vertices)
+        if (!it.isVertexColored())
+            return false;
+    return true;
 }
 void Graph::printStatisticArray(){
     for (int i=0;i<13;i++){
         std::cout<<statisticArray[i]<<std::endl;
     }
 }
+int Graph::getDegree(int vertex) {
+    return adj_Matrix[vertex].size();
+}
+std::list<Vertex>* Graph::getadj_Matrix() {return adj_Matrix;}
 int Graph::getVertices(){return exams;}
-int* Graph::getAdj_Matrix(){return adj_Matrix;}
+
 std::string Graph::toString() {
     return "Name: " + this -> problemName.substr(12, 8) + " |V|: " + std::to_string(exams) + " Conflict Density: "+ std::to_string(confDen) +
                                         " Min: " + std::to_string(min) + " Med: " + std::to_string(med) + " Max: " + std::to_string(max) +
