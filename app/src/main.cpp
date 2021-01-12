@@ -60,7 +60,7 @@ void readData(string fn, int exams) {
     for (int i=1;i<=exams; i++){
 cout <<"Exam"<<i<<"Enrolled students:";
 for (int studentsId:examStudents[i])
-cout<<studentId<<"";
+cout<<studentsId<<"";
 cout<< endl;
     }
     cout <<endl;
