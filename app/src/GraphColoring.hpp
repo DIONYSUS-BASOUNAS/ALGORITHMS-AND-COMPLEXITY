@@ -13,6 +13,7 @@ class Graph {
     private:
     int exams;
     std::list<Vertex>* adj_Matrix;
+    std::list<int>*adj;
     double confDen;
     int min,med,max;
     double mean;

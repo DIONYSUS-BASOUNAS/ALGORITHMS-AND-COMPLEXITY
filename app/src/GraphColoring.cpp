@@ -5,11 +5,13 @@ Graph::Graph(int exams, std::string problemName)
     this->exams = exams;
     this->problemName = problemName;
     adj_Matrix = new std::list<Vertex>[exams];
+    adj = new std::list<int>[exams];
     colors.insert(1);
 }
 Graph::~Graph()
 {
     delete[] adj_Matrix;
+    delete[] adj;
 }
 void Graph::initaiLizedAdj_Martix(std::vector<std::set<int>> examStudents)
 {
@@ -38,8 +40,10 @@ void Graph::addEdge(int i, int j)
 {
     Vertex v1(j);
     adj_Matrix[i].push_back(v1);
+    adj[i].push_back(j);
     Vertex v2(i);
     adj_Matrix[j].push_back(v2);
+    adj[j].push_back(i);
 }
 int Graph::commonElements(std::set<int> s1, std::set<int> s2)
 {
@@ -118,47 +122,52 @@ void Graph::coefVar(){
 }
 void Graph::greedyColoring()
 {
-   sortVerticesByDegree(vertices);
-    int colorOfVertex[exams];
+   int result[exams];
 
+    // Assign the first color to first vertex
+    result[0] = 0;
+
+    // Initialize remaining V-1 vertices as unassigned
     for (int u = 1; u < exams; u++)
-        colorOfVertex[vertices[u].getVertex()] = -1; 
+        result[u] = -1; // no color is assigned to u
 
-    bool availableColors[exams];
+    // A temporary array to store the available colors. True
+    // value of available[cr] would mean that the color cr is
+    // assigned to one of its adjacent vertices
+    bool available[exams];
     for (int cr = 0; cr < exams; cr++)
-        availableColors[cr] = true;
+        available[cr] = true;
 
-    colorOfVertex[vertices[0].getVertex()] = 0;
     // Assign colors to remaining V-1 vertices
     for (int u = 1; u < exams; u++)
     {
         // Process all adjacent vertices and flag their colors
         // as unavailable
-        for (auto i = adj_Matrix[vertices[u].getVertex()].begin(); i != adj_Matrix[vertices[u].getVertex()].end(); ++i) {
-            if (colorOfVertex[i->getVertex()] != -1)
-                availableColors[colorOfVertex[i->getVertex()]] = false;
-        }
+        std::list<int>::iterator i;
+        for (i = adj[u].begin(); i != adj[u].end(); ++i)
+            if (result[*i] != -1)
+                available[result[*i]] = false;
 
         // Find the first available color
         int cr;
         for (cr = 0; cr < exams; cr++)
-            if (availableColors[cr])
+            if (available[cr])
                 break;
 
-        colorOfVertex[vertices[u].getVertex()] = cr; // Assign the found color
+        result[u] = cr; // Assign the found color
 
         // Reset the values back to true for the next iteration
-        for (int i = 0; i < exams; i++) {
-            if (colorOfVertex[i] != -1)
-                availableColors[colorOfVertex[i]] = true;
-        }
+        for (i = adj[u].begin(); i != adj[u].end(); ++i)
+            if (result[*i] != -1)
+                available[result[*i]] = true;
     }
 
-    // print the coloredVertex
+    // print the result
     for (int u = 0; u < exams; u++)
         std::cout << "Vertex " << u << " --->  Color "
-             << colorOfVertex[u] << std::endl;
+             << result[u] << std::endl;
 }
+
 void Graph::DSatur() {
 
     int colorOfVertex[exams];

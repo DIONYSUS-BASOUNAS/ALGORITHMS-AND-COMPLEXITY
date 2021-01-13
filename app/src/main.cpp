@@ -90,7 +90,7 @@ void selectFile() {
         "../datasets/uta-s-92.stu", //10
         "../datasets/ute-s-92.stu", //11
         "../datasets/yor-f-83.stu", //12
-        "../datasets/toy-e-s6.stu", //13 no toronto data, created for tests
+        "../datasets/toy_e5_s6.stu", //13 no toronto data, created for tests
     };
     int exams[14] = {543, 682, 190, 81, 461, 381, 2419, 486, 139, 261, 622, 184, 181, 5};
     
