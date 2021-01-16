@@ -186,7 +186,7 @@ void Graph::DSatur() {
     vertices[mvd].setVertexColored(true);
 
     for (auto it = adj_Matrix[mvd].begin(); it != adj_Matrix[mvd].end(); ++it) {
-        if (!(vertices[it->getVertex()].checkNeighborColor(colorOfVertex[it->getVertex()], mvd, adj_Matrix[it->getVertex()], colorOfVertex, vertices)))
+        if (!(vertices[it->getVertex()].checkNeighborColor(colorOfVertex[mvd], mvd, adj_Matrix[it->getVertex()], colorOfVertex, vertices)))
            vertices[it->getVertex()].raiseSatur();
 
     }
