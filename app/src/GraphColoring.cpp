@@ -123,7 +123,7 @@ void Graph::coefVar(){
 void Graph::greedyColoring()
 {
    int result[exams];
-
+    int Csize=0;
     // Assign the first color to first vertex
     result[0] = 0;
 
@@ -150,10 +150,12 @@ void Graph::greedyColoring()
 
         // Find the first available color
         int cr;
-        for (cr = 0; cr < exams; cr++)
+        for (cr = 0; cr < exams; cr++){
+            if(Csize<cr)
+                Csize=cr;
             if (available[cr])
                 break;
-
+        }
         result[u] = cr; // Assign the found color
 
         // Reset the values back to true for the next iteration
@@ -166,6 +168,8 @@ void Graph::greedyColoring()
     for (int u = 0; u < exams; u++)
         std::cout << "Vertex " << u << " --->  Color "
              << result[u] << std::endl;
+
+    std::cout<< "size "<<Csize+1<<std::endl;
 }
 
 void Graph::DSatur() {
@@ -188,13 +192,13 @@ void Graph::DSatur() {
     }
 
     while (!graphIsColored()) {
-        int maxSaturDegree = 0;
+        int maxSaturDegree = -1;
         for (auto it = vertices.begin(); it != vertices.end(); ++it)
             if ((it->getSatur() > maxSaturDegree) && !(it->isVertexColored()))
                 maxSaturDegree = it->getSatur();
 
         int maxSaturVertex;
-        int degree = 0;
+        int degree = -1;
         for (auto it : vertices) {
             if ((it.getSatur() == maxSaturDegree) && !(it.isVertexColored())) {
                 if (it.getDegree() > degree) {
@@ -237,6 +241,7 @@ void Graph::DSatur() {
     for (int u = 0; u < exams; u++)
         std::cout << "Vertex " << u << " --->  Color "
              << colorOfVertex[u] - 1 << std::endl;
+    std::cout << "size "<< colors.size()<<std::endl;
 }
 void Graph::sortVerticesByDegree(std::vector<Vertex> &v) {
     std::sort(v.rbegin(), v.rend());

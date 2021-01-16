@@ -77,20 +77,20 @@ cout<< endl;
 void selectFile() {
     //Problems
     string datasets[14] = {
-        "../datasets/car-f-92.stu", //0
-        "../datasets/car-s-91.stu", //1
-        "../datasets/ear-f-83.stu", //2
-        "../datasets/hec-s-92.stu", //3
-        "../datasets/kfu-s-93.stu", //4
-        "../datasets/lse-f-91.stu", //5
-        "../datasets/pur-s-93.stu", //6
-        "../datasets/rye-s-93.stu", //7
-        "../datasets/sta-f-83.stu", //8
-        "../datasets/tre-s-92.stu", //9
-        "../datasets/uta-s-92.stu", //10
-        "../datasets/ute-s-92.stu", //11
-        "../datasets/yor-f-83.stu", //12
-        "../datasets/toy_e5_s6.stu", //13 no toronto data, created for tests
+        "../datasets/car-f-92.stu", //1
+        "../datasets/car-s-91.stu", //2
+        "../datasets/ear-f-83.stu", //3
+        "../datasets/hec-s-92.stu", //4
+        "../datasets/kfu-s-93.stu", //5
+        "../datasets/lse-f-91.stu", //6
+        "../datasets/pur-s-93.stu", //7
+        "../datasets/rye-s-93.stu", //8
+        "../datasets/sta-f-83.stu", //9
+        "../datasets/tre-s-92.stu", //10
+        "../datasets/uta-s-92.stu", //11
+        "../datasets/ute-s-92.stu", //12
+        "../datasets/yor-f-83.stu", //13
+        "../datasets/toy_e5_s6.stu", //14 no toronto data, created for tests
     };
     int exams[14] = {543, 682, 190, 81, 461, 381, 2419, 486, 139, 261, 622, 184, 181, 5};
     
