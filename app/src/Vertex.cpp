@@ -1,6 +1,6 @@
 #include "Vertex.hpp"
 
-Vertex::Vertex(){}
+
 
 Vertex::Vertex(int vertex) {
     setVertex(vertex);
@@ -15,12 +15,7 @@ Vertex::Vertex(int vertex, int degree) {
     setVertexColored(false);
 }
 
-Vertex::Vertex(int vertex, int degree, int satur, bool isColored) {
-    setVertex(vertex);
-    setDegree(degree);
-    setSatur(satur);
-    setVertexColored(isColored);
-}
+
 
 bool Vertex::operator<(const Vertex& v) {
     return this->degree < v.degree;
