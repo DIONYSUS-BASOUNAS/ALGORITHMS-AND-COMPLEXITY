@@ -180,11 +180,11 @@ void Graph::DSatur() {
 
     for (int v = 0; v < exams; v++) 
         colorOfVertex[v] = -1;
-
+    //xromatismos protis korifis
     colorOfVertex[mvd] = *colors.end();
     vertices[mvd].setSatur(-1);
     vertices[mvd].setVertexColored(true);
-
+    //
     for (auto it = adj_Matrix[mvd].begin(); it != adj_Matrix[mvd].end(); ++it) {
         if (!(vertices[it->getVertex()].checkNeighborColor(colorOfVertex[mvd], mvd, adj_Matrix[it->getVertex()], colorOfVertex, vertices)))
            vertices[it->getVertex()].raiseSatur();
@@ -242,9 +242,6 @@ void Graph::DSatur() {
         std::cout << "Vertex " << u << " --->  Color "
              << colorOfVertex[u] - 1 << std::endl;
     std::cout << "size "<< colors.size()<<std::endl;
-}
-void Graph::sortVerticesByDegree(std::vector<Vertex> &v) {
-    std::sort(v.rbegin(), v.rend());
 }
 int Graph::maximumVertexDegree() {
     int max = getDegree(0);
